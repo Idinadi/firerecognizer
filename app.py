@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import json, cv2
 import pickle
 import numpy as np
+import urllib.request
 
 app = Flask(__name__)
 
@@ -11,7 +12,10 @@ sift = cv2.SIFT_create()
 min_length = 768
 
 def preprocess(text):
-    image = cv2.imread(text)
+    resp = urllib.request.urlopen(text)
+    #image = cv2.imread(text)
+    image = np.asarray(bytearray(resp.read()), dtype="unit8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     keypoints, descriptors = sift.detectAndCompute(gray, None)
     final_features = descriptors.flatten()
