@@ -14,8 +14,9 @@ min_length = 768
 def preprocess(text):
     resp = urllib.request.urlopen(text)
     #image = cv2.imread(text)
-    image = np.asarray(bytearray(resp.read()), dtype="unit8")
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
     image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    print(image.shape)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     keypoints, descriptors = sift.detectAndCompute(gray, None)
     final_features = descriptors.flatten()
@@ -34,5 +35,5 @@ def predict():
         return jsonify({"message" : "Negative", "pred": preds[0]})
     return jsonify({"message" : "Fire Detected", "pred": preds[1]})
 
-#if __name__=="__main__":
-   # app.run(host="127.0.0.1", port=8000, debug=True)
+if __name__=="__main__":
+   app.run(host="127.0.0.1", port=8000, debug=True)
